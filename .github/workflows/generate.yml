@@ -4,6 +4,8 @@ name: Build LaTeX document
 on:
   workflow_dispatch:
   push:
+    paths:
+      - ./**.tex
 
 jobs:
   build_latex:
