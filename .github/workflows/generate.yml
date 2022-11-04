@@ -4,8 +4,6 @@ name: Build LaTeX document
 on:
   workflow_dispatch:
   push:
-    branches:
-      - main
     paths:
     - '**.tex'
 jobs:
@@ -16,14 +14,23 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.ref }}
-      - name: Git pull
+      
+      - name: Pull
         run: git pull
+
+      - id: files
+        uses: jitterbit/get-changed-files@v1
+
+      - id: debug
+        run: echo ${{ steps.files.outputs.all }}
+
       - name: Compile LaTeX document
         uses: xu-cheng/latex-action@v2
         with:
-          root_file: "*.tex"
+          root_file: ${{ steps.files.outputs.all }}
           glob_root_file: true
           latexmk_use_xelatex: true
+
       - name: Commit changes
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -34,5 +41,5 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: 'documents'
+          branch: 'documents_dev'
           force: true
