@@ -20,6 +20,11 @@ jobs:
 
       - id: files
         uses: jitterbit/get-changed-files@v1
+        with:
+          # Format of the steps output context.
+          # Can be 'space-delimited', 'csv', or 'json'.
+          # Default: 'space-delimited'
+          format: ''
 
       - id: debug
         run: echo ${{ steps.files.outputs.all }}
