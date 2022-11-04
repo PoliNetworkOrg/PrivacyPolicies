@@ -4,8 +4,6 @@ name: Build LaTeX document
 on:
   workflow_dispatch:
   push:
-    paths:
-      - ./../../**.tex
 
 jobs:
   build_latex:
@@ -36,19 +34,24 @@ jobs:
         run: echo ${{ steps.changed-files.outputs.all_changed_files }}
 
       - name: Compile LaTeX document
+        if: "${{ steps.changed-files.outputs.all_changed_files != '' }}"
         uses: xu-cheng/latex-action@v2
         with:
           root_file: |
             ${{ steps.changed-files.outputs.all_changed_files }}
           glob_root_file: true
           latexmk_use_xelatex: true
+          
+      - name: Pull
+        run: git pull
 
       - name: Commit changes
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add *.pdf -f
-          git commit -m "📙 Update documents pdf"
+          (git commit -m "📙 Update documents pdf") || true
+          
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
