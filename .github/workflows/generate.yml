@@ -53,6 +53,7 @@ jobs:
           (git commit -m "📙 Update documents pdf") || true
           
       - name: Push changes
+        if: "${{ steps.changed-files.outputs.all_changed_files != '' }}"
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
